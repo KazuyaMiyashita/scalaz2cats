@@ -1,14 +1,7 @@
 package fix
 
-import scala.meta._
-import scalafix._
-import scalafix.testkit._
+import scalafix.testkit.SemanticRuleSuite
 
-class Mylibrary_Tests
-  extends SemanticRewriteSuite(
-    SemanticdbIndex.load(Classpath(AbsolutePath(BuildInfo.inputClassdirectory))),
-    AbsolutePath(BuildInfo.inputSourceroot),
-    Seq(AbsolutePath(BuildInfo.outputSourceroot))
-  ) {
+class Mylibrary_Tests extends SemanticRuleSuite() {
   runAllTests()
 }
