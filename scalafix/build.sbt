@@ -5,7 +5,11 @@ inThisBuild(
     scalaVersion := V.scala213,
     addCompilerPlugin(scalafixSemanticdb),
     scalacOptions ++= List(
-      "-Yrangepos"
+      "-Ywarn-unused:imports",
+      "-deprecation",
+      "-unchecked",
+      "-Yrangepos",
+      "-P:semanticdb:synthetics:on"
     )
   )
 )
@@ -20,19 +24,20 @@ lazy val input = project.settings(
   )
 
 lazy val output = project.settings(
-  libraryDependencies += "org.typelevel" %% "cats-core" % "2.0.0",
-  libraryDependencies += "org.typelevel" %% "mouse" % "0.16"
+  libraryDependencies += "org.typelevel" %% "cats-core" % "2.0.0"
 )
 
 lazy val tests = project
   .settings(
     libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
+    compile in Compile :=
+      compile.in(Compile).dependsOn(compile.in(input, Compile)).value,
     scalafixTestkitOutputSourceDirectories :=
       sourceDirectories.in(output, Compile).value,
     scalafixTestkitInputSourceDirectories :=
       sourceDirectories.in(input, Compile).value,
     scalafixTestkitInputClasspath :=
-      fullClasspath.in(input, Compile).value
+      fullClasspath.in(input, Compile).value,
   )
   .dependsOn(rules)
   .enablePlugins(ScalafixTestkitPlugin)
